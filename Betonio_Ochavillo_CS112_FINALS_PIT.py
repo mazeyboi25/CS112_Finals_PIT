@@ -1,7 +1,23 @@
 import tkinter as tk
 
+from Betonio_Ochavillo_CS112_MIDTERM_PIT import intro
+
+def intro():  # Defined function for Tkinter GUI
+    label_for_intro = tk.Label(root, text="Welcome to Pixpay!"
+                                          " This shop will offer you discounted game credits of your favorite games!\n"
+                                          "What game credits would you like to purchase?\n")
+    label_for_intro.pack()
+
+
+def retry_purchase(*widgets_to_forget):
+    for widget in widgets_to_forget:
+        widget.pack_forget()
+    intro()
+
+
 class GameTransaction:
     def __init__(self, game_name, cost):
+        self.coins_balance = tk.Entry(root, width=15)
         self.game_name = game_name
         self.cost = cost
         self.remaining_balance = 0
@@ -14,7 +30,7 @@ class GameTransaction:
                 label_total = tk.Label(root, text=f'Your remaining balance is ₱{expression}. Thank you for purchasing!'
                                                   '\nWould you like to purchase again?')
                 label_total.pack()
-                return_submit_yes = tk.Button(width=25, text='Yes', command=lambda: self.retry_purchase(label_total))
+                return_submit_yes = tk.Button(width=25, text='Yes', command=lambda: retry_purchase(label_total))
                 return_submit_yes.pack()
                 return_submit_no = tk.Button(width=25, text='No', command=root.quit)
                 return_submit_no.pack()
@@ -24,29 +40,26 @@ class GameTransaction:
                 return_label = tk.Label(root, text="Would you like to retry?")
                 return_label.pack()
                 return_submit_yes = tk.Button(root, width=25, text='Yes',
-                                              command=lambda: self.retry_purchase(label_total, return_label))
+                                              command=lambda: retry_purchase(label_total, return_label))
                 return_submit_yes.pack()
                 return_submit_no = tk.Button(root, width=25, text='No', command=root.quit)
                 return_submit_no.pack()
         except ValueError:
             error_label = tk.Label(text='Input is not a number. Would you like to retry?')
             error_label.pack()
-            return_submit_yes = tk.Button(width=25, text='Yes', command=lambda: self.retry_purchase(error_label))
+            return_submit_yes = tk.Button(width=25, text='Yes', command=lambda: retry_purchase(error_label))
             return_submit_yes.pack()
             return_submit_no = tk.Button(width=25, text='No', command=root.quit)
             return_submit_no.pack()
 
-    def retry_purchase(self, *widgets_to_forget):
-        for widget in widgets_to_forget:
-            widget.pack_forget()
-        self.intro()
-
     def intro(self):
+        welcome_label = tk.Label(root, text=f'Welcome to the {self.game_name} Purchase Application!')
+        welcome_label.pack()
         coins_balance_label = tk.Label(root, text=f'Enter your Pixpay balance for {self.game_name}.')
         coins_balance_label.pack()
-        self.coins_balance = tk.Entry(root, width=15)
         self.coins_balance.pack()
-        balance_submit = tk.Button(text='Submit', width=15, command=lambda: self.handle_balance_submit(coins_balance_label))
+        balance_submit = tk.Button(text='Submit', width=15,
+                                   command=lambda: self.handle_balance_submit(coins_balance_label))
         balance_submit.pack()
 
     def handle_balance_submit(self, coins_balance_label):
@@ -55,29 +68,35 @@ class GameTransaction:
         self.coins_balance.pack_forget()
         self.total()
 
+
 root = tk.Tk()
 root.title("Game Purchase Application")
+
 
 class ValorantTransaction(GameTransaction):
     def __init__(self):
         super().__init__("Valorant", 100)
 
+
 class CODMTransaction(GameTransaction):
     def __init__(self):
         super().__init__("CODM", 420)
 
+
 def valorant_game_choice():
-    valorant_transaction = ValorantTransaction()
-    valorant_transaction.intro()
+    intro()
+
 
 def codm_game_choice():
-    codm_transaction = CODMTransaction()
-    codm_transaction.intro()
+    intro()
+
 
 valorant_game_button = tk.Button(text='Valorant', width=25, command=valorant_game_choice)
 valorant_game_button.pack()
 
 codm_game_button = tk.Button(text='CODM', width=25, command=codm_game_choice)
 codm_game_button.pack()
+
+intro()
 
 root.mainloop()
